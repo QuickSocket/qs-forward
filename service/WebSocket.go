@@ -55,7 +55,11 @@ func attemptConnection(clientId, clientSecret, webSocketURL string) (*websocket.
 
 	conn, res, err := websocket.DefaultDialer.Dial(webSocketURL, headers)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect WebSocket (%v): %w", res.Status, err)
+		if res != nil {
+			return nil, fmt.Errorf("failed to connect WebSocket (%v): %w", res.Status, err)
+		}
+
+		return nil, fmt.Errorf("failed to connect WebSocket: %w", err)
 	}
 
 	return conn, nil
