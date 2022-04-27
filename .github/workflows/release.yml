@@ -1,0 +1,98 @@
+name: release
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "^1.18"
+      - run: chmod u+x ./build.sh
+      - run: ./build.sh
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      # Linux amd64
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_linux-amd64.zip
+          asset_name: qs-forward_${{ github.ref_name }}_linux-amd64.zip
+          asset_content_type: application/zip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_linux-amd64.tar.gz
+          asset_name: qs-forward_${{ github.ref_name }}_linux-amd64.tar.gz
+          asset_content_type: application/gzip
+
+      # Darwin amd64
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_darwin-amd64.zip
+          asset_name: qs-forward_${{ github.ref_name }}_darwin-amd64.zip
+          asset_content_type: application/zip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_darwin-amd64.tar.gz
+          asset_name: qs-forward_${{ github.ref_name }}_darwin-amd64.tar.gz
+          asset_content_type: application/gzip
+
+      # Darwin arm64
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_darwin-arm64.zip
+          asset_name: qs-forward_${{ github.ref_name }}_darwin-arm64.zip
+          asset_content_type: application/zip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_darwin-arm64.tar.gz
+          asset_name: qs-forward_${{ github.ref_name }}_darwin-arm64.tar.gz
+          asset_content_type: application/gzip
+
+      # Windows amd64
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_windows-amd64.zip
+          asset_name: qs-forward_${{ github.ref_name }}_windows-amd64.zip
+          asset_content_type: application/zip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/qs-forward_${{ github.ref_name }}_windows-amd64.tar.gz
+          asset_name: qs-forward_${{ github.ref_name }}_windows-amd64.tar.gz
+          asset_content_type: application/gzip
