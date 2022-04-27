@@ -11,19 +11,18 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// TODO: Correct this.
-const WebSocketURL = "wss://forward-staging.quicksocket.io"
-
 type WebSocket struct {
 	clientId     string
 	clientSecret string
+	webSocketURL string
 	callbackc    chan<- *model.Callback
 }
 
-func NewWebSocket(clientId, clientSecret string, callbackc chan<- *model.Callback) *WebSocket {
+func NewWebSocket(clientId, clientSecret, webSocketURL string, callbackc chan<- *model.Callback) *WebSocket {
 	return &WebSocket{
 		clientId:     clientId,
 		clientSecret: clientSecret,
+		webSocketURL: webSocketURL,
 		callbackc:    callbackc,
 	}
 }
@@ -32,7 +31,7 @@ func (s *WebSocket) Start(logger *log.Logger) error {
 	for {
 		logger.Printf("Attempting connection to environment...\n")
 
-		conn, err := attemptConnection(s.clientId, s.clientSecret)
+		conn, err := attemptConnection(s.clientId, s.clientSecret, s.webSocketURL)
 		if err != nil {
 			return err
 		}
@@ -50,11 +49,11 @@ func (s *WebSocket) Start(logger *log.Logger) error {
 	}
 }
 
-func attemptConnection(clientId, clientSecret string) (*websocket.Conn, error) {
+func attemptConnection(clientId, clientSecret, webSocketURL string) (*websocket.Conn, error) {
 	headers := http.Header{}
 	headers.Add("Authorization", produceAuthHeader(clientId, clientSecret))
 
-	conn, res, err := websocket.DefaultDialer.Dial(WebSocketURL, headers)
+	conn, res, err := websocket.DefaultDialer.Dial(webSocketURL, headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect WebSocket (%v): %w", res.Status, err)
 	}

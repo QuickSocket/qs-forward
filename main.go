@@ -30,7 +30,7 @@ func run() error {
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
 	services := []Service{
-		service.NewWebSocket(config.ClientId, config.ClientSecret, callbackc),
+		service.NewWebSocket(config.ClientId, config.ClientSecret, config.WebSocketURL, callbackc),
 		service.NewHTTP(config.TargetURL, config.TLSSkipVerify, callbackc),
 	}
 
