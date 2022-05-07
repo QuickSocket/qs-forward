@@ -4,12 +4,21 @@ export VERSION=$GITHUB_REF_NAME
 mkdir ./build
 
 build() {
-	GOOS=$1 GOARCH=$2 go build -o ./build/qs-forward || exit 1
+	EXTENSION=""
+	if [ "$1" = "windows" ]; then
+		EXTENSION=".exe"
+	fi
+
+	GOOS=$1 GOARCH=$2 go build -o ./build/qs-forward$EXTENSION || exit 1
 	cd ./build
-	chmod u+x ./qs-forward
-	zip ./qs-forward_${VERSION}_$1-$2.zip ./qs-forward || exit 1
-	tar -czf ./qs-forward_${VERSION}_$1-$2.tar.gz ./qs-forward || exit 1
-	rm ./qs-forward
+
+	if [ "$1" != "windows" ]; then
+		chmod u+x ./qs-forward
+	fi
+	
+	zip ./qs-forward_${VERSION}_$1-$2.zip ./qs-forward$EXTENSION || exit 1
+	tar -czf ./qs-forward_${VERSION}_$1-$2.tar.gz ./qs-forward$EXTENSION || exit 1
+	rm ./qs-forward$EXTENSION
 	cd ..
 }
 
