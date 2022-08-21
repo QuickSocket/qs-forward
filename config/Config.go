@@ -10,6 +10,7 @@ type Config struct {
 	ClientId      string
 	ClientSecret  string
 	TLSSkipVerify bool
+	Quiet         bool
 	WebSocketURL  string
 
 	TargetURL string
@@ -19,6 +20,7 @@ func NewConfigFromCommandLine() (*Config, error) {
 	clientId := flag.String("client-id", "", "The Client ID of the environment to receive callbacks for.")
 	clientSecret := flag.String("client-secret", "", "Either of the two possible Client Secrets for the environment.")
 	tlsSkipVerify := flag.Bool("tls-skip-verify", false, "When set to true, remote certificates will not be verified during TLS handshake.")
+	quiet := flag.Bool("quiet", false, "When set to true, only errors will be logged.")
 	websocketURL := flag.String("websocket-url", "wss://forward.quicksocket.io", "")
 	flag.Parse()
 
@@ -36,6 +38,7 @@ func NewConfigFromCommandLine() (*Config, error) {
 		ClientId:      *clientId,
 		ClientSecret:  *clientSecret,
 		TLSSkipVerify: *tlsSkipVerify,
+		Quiet:         *quiet,
 		WebSocketURL:  *websocketURL,
 
 		TargetURL: targetURL,

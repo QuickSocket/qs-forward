@@ -1,6 +1,6 @@
-FROM ubuntu:21.04
+FROM ubuntu:22.04
 
-ARG GOLANG_VERSION=1.18.1
+ARG GOLANG_VERSION=1.19
 
 RUN apt-get update
 RUN apt-get install -y git jq wget zip gcc tar

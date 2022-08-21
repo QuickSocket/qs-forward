@@ -64,6 +64,12 @@ By default, callbacks from `qs-forward` to your back-end application will
 attempt to verify any provided certificates when using HTTPS.  If you'd like to
 disable this, you can provide the `--tls-skip-verify` flag on the command-line.
 
+## Quiet Mode
+
+As of `qs-forward` version `0.3.0`, successful callbacks will be logged.  If
+you'd like to revert to the behavior of `qs-forward` version `0.2.x` and below,
+pass the `--quiet` flag on the command-line.
+
 ## Troubleshooting
 
 If you encounter errors when first running `qs-forward`, check the following:

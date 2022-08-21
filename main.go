@@ -31,7 +31,7 @@ func run() error {
 
 	services := []Service{
 		service.NewWebSocket(config.ClientId, config.ClientSecret, config.WebSocketURL, callbackc),
-		service.NewHTTP(config.TargetURL, config.TLSSkipVerify, callbackc),
+		service.NewHTTP(config.TargetURL, config.TLSSkipVerify, config.Quiet, callbackc),
 	}
 
 	for _, service := range services {

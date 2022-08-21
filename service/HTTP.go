@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,13 +14,15 @@ import (
 type HTTP struct {
 	targetURL     string
 	tlsSkipVerify bool
+	quiet         bool
 	callbackc     <-chan *model.Callback
 }
 
-func NewHTTP(targetURL string, tlsSkipVerify bool, callbackc <-chan *model.Callback) *HTTP {
+func NewHTTP(targetURL string, tlsSkipVerify, quiet bool, callbackc <-chan *model.Callback) *HTTP {
 	return &HTTP{
 		targetURL:     targetURL,
 		tlsSkipVerify: tlsSkipVerify,
+		quiet:         quiet,
 		callbackc:     callbackc,
 	}
 }
@@ -43,7 +46,25 @@ func (s *HTTP) Start(logger *log.Logger) error {
 		go func() {
 			if err := pushCallback(s.targetURL, client, callbackModel); err != nil {
 				logger.Printf("%v\n", err)
+				return
 			}
+
+			if s.quiet {
+				return
+			}
+
+			deserialized := map[string]any{}
+			if err := json.Unmarshal([]byte(callbackModel.SerializedData), &deserialized); err != nil {
+				logger.Printf("WARNING: Could not deserialize callback request model: %v\n", err)
+				return
+			}
+
+			logger.Printf(
+				"> Pushed %v for connection %v (%v)\n",
+				deserialized["action"].(string),
+				deserialized["connectionId"].(string),
+				deserialized["referenceId"].(string),
+			)
 		}()
 	}
 
